@@ -8,9 +8,11 @@ const vs = `
 
 const fs = `
     precision mediump float;
+    
+    uniform float t; 
 
     void main() {
-       gl_FragColor = vec4(fract(gl_FragCoord.xy / vec2(16., 32.)),0,1); 
+       gl_FragColor = vec4(fract(t * gl_FragCoord.xy / vec2(16., 32.)), 0, 1); 
     }
 `;
 
@@ -31,3 +33,6 @@ gl.bufferData(gl.ARRAY_BUFFER, quad_vertex_buffer_data, gl.STATIC_DRAW);
 gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(vertexPositionAttribute)
 gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+var locationOfFoo = gl.getUniformLocation(shader_program, "t");
+gl.uniform1f(shader_program, .1);

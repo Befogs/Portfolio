@@ -35,4 +35,4 @@ gl.enableVertexAttribArray(vertexPositionAttribute)
 gl.drawArrays(gl.TRIANGLES, 0, 6);
 
 var locationOfFoo = gl.getUniformLocation(shader_program, "t");
-gl.uniform1f(shader_program, .1);
+gl.uniform1f(locationOfFoo, .1);

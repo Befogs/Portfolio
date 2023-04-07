@@ -7,10 +7,11 @@ const vs = `
 `;
 
 const fs = `
-  uniform mediump vec2 points[16];
-  uniform mediump float shades[16];
-  uniform mediump float saturations[16];
+  uniform mediump vec2 points[32];
+  uniform mediump float shades[32];
+  uniform mediump float saturations[32];
   uniform mediump float hue;
+  uniform mediump float width;
   
   mediump vec3 hsv2rgb(mediump vec3 c)
   {
@@ -24,9 +25,9 @@ const fs = `
     mediump float shade;
     mediump float saturation;
     
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 32; i++) {
       for (mediump float j = 0.0; j < 9.0; j++) {
-        mediump float nd = sqrt(pow(gl_FragCoord.x - points[i].x + mod(j, 3.0) * 640.0 - 640.0, 2.0) + pow(gl_FragCoord.y - points[i].y + floor(j / 3.0) * 480.0 - 480.0, 2.0));
+        mediump float nd = sqrt(pow(gl_FragCoord.x - points[i].x + mod(j, 3.0) * width - width, 2.0) + pow(gl_FragCoord.y - points[i].y + floor(j / 3.0) * 400.0 - 400.0, 2.0));
   
         if (nd < d) {
           d = nd;
@@ -36,11 +37,12 @@ const fs = `
       }
     }
     
-    gl_FragColor = vec4(hsv2rgb(vec3(hue, saturation, shade)), d / 10.0);
+    gl_FragColor = vec4(hsv2rgb(vec3(hue, saturation, shade)), 1.0);
   }
 `;
 
-var gl = document.querySelector("canvas").getContext("webgl");
+const canvas = document.querySelector("canvas")
+const gl = canvas.getContext("webgl");
 
 const vertShader = gl.createShader(gl.VERTEX_SHADER);
 gl.shaderSource(vertShader, vs);
@@ -73,49 +75,66 @@ const huePtr = gl.getUniformLocation(prog, "hue");
 const pointsPtr = gl.getUniformLocation(prog, "points");
 const shadesPtr = gl.getUniformLocation(prog, "shades");
 const saturationsPtr = gl.getUniformLocation(prog, "saturations");
+const widthPtr = gl.getUniformLocation(prog, "width");
 const start = new Date().getTime();
 
-let points = [];
-let velocities = [];
-let shades = [];
-let saturations = [];
+let lid, cid;
 
-for (let i = 0; i < 16; i++) {
-  points.push(Math.random() * 640, Math.random() * 480);
-  velocities.push((Math.random() - .5) / 10, (Math.random() - .5) / 10);
-  shades.push(Math.random() * .5 + .5);
-  saturations.push(Math.random() * .5 + .5);
-}
+function resize() {
+  window.clearInterval(lid);
 
-let lastTime = new Date().getTime()
-
-window.setInterval(function() {
-  let newTime = new Date().getTime();
-  let deltaTime = newTime - lastTime;
+  canvas.width = window.innerWidth;
+  gl.viewport(0, 0, canvas.width, 400);
   
-  for (let i = 0; i < 16; i++) {
-    points[i * 2] = points[i * 2] + velocities[i * 2] * deltaTime;
-
-    if (points[i * 2] < 0) {
-      points[i * 2] += 640;
-    } else if (points[i * 2] > 640) {
-      points[i * 2] -= 640;
-    }
-    
-    points[i * 2 + 1] = points[i * 2 + 1] + velocities[i * 2 + 1] * deltaTime;
-
-    if (points[i * 2 + 1] < 0) {
-      points[i * 2 + 1] += 480;
-    } else if (points[i * 2 + 1] > 480) {
-      points[i * 2 + 1] -= 480;
-    }
+  let points = [];
+  let velocities = [];
+  let shades = [];
+  let saturations = [];
+  
+  for (let i = 0; i < window.innerWidth / (1920 / 32); i++) {
+    points.push(Math.random() * window.innerWidth, Math.random() * 400);
+    velocities.push((Math.random() - .5) / 10, (Math.random() - .5) / 10);
+    shades.push(Math.random() * .5 + .5);
+    saturations.push(Math.random() * .5 + .5);
   }
   
-  gl.uniform1f(huePtr, ((newTime - start) / 100000) % 1);
-  gl.uniform2fv(pointsPtr, new Float32Array(points));
-  gl.uniform1fv(shadesPtr, new Float32Array(shades));
-  gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
-  gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  let lastTime = new Date().getTime()
+  
+  cid = window.setInterval(function() {
+    let newTime = new Date().getTime();
+    let deltaTime = newTime - lastTime;
+    
+    for (let i = 0; i < 32; i++) {
+      points[i * 2] = points[i * 2] + velocities[i * 2] * deltaTime;
+  
+      if (points[i * 2] < 0) {
+        points[i * 2] += window.innerWidth;
+      } else if (points[i * 2] > window.innerWidth) {
+        points[i * 2] -= window.innerWidth;
+      }
+      
+      points[i * 2 + 1] = points[i * 2 + 1] + velocities[i * 2 + 1] * deltaTime;
+  
+      if (points[i * 2 + 1] < 0) {
+        points[i * 2 + 1] += 400;
+      } else if (points[i * 2 + 1] > 400) {
+        points[i * 2 + 1] -= 400;
+      }
+    }
+    
+    gl.uniform1f(huePtr, ((newTime - start) / 100000) % 1);
+    gl.uniform2fv(pointsPtr, new Float32Array(points));
+    gl.uniform1fv(shadesPtr, new Float32Array(shades));
+    gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
+    gl.uniform1f(widthPtr, window.innerWidth);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  
+    lastTime = newTime;
+  }, 1000 / 60);
 
-  lastTime = newTime;
-}, 1000 / 144);
+  lid = cid;
+}
+
+window.onresize = resize;
+
+resize();

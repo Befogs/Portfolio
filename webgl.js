@@ -131,13 +131,15 @@ function resize() {
         points[i * 2 + 1] -= 400;
       }
     }
-    
-    gl.uniform1f(huePtr, hue);
-    gl.uniform2fv(pointsPtr, new Float32Array(points));
-    gl.uniform1fv(shadesPtr, new Float32Array(shades));
-    gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
-    gl.uniform1f(widthPtr, window.innerWidth);
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+    if (window.pageYOffset <= 400) {
+      gl.uniform1f(huePtr, hue);
+      gl.uniform2fv(pointsPtr, new Float32Array(points));
+      gl.uniform1fv(shadesPtr, new Float32Array(shades));
+      gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
+      gl.uniform1f(widthPtr, window.innerWidth);
+      gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    }
 
     hue = (hue + deltaTime / 100000) % 1;
     lastTime = newTime;

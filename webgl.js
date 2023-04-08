@@ -80,8 +80,15 @@ const start = new Date().getTime();
 let hue = Math.random();
 
 let lid, cid;
+let lastX = 0;
 
 function resize() {
+  if (window.innerWidth == lastX) {
+    return;
+  }
+
+  lastX = window.innerWidth;
+  
   window.clearInterval(lid);
 
   canvas.width = window.innerWidth;

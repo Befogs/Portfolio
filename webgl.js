@@ -30,84 +30,12 @@ const fs = `
       mediump float sdx = gl_FragCoord.x - points[i].x;
       mediump float sdy = gl_FragCoord.y - points[i].y;
 
-      if (sdx > width / 2.0) {
-        if (sdy > 200.0) {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x - width, 2.0) + pow(gl_FragCoord.y - points[i].y - 400.0, 2.0));
-  
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        } else if (sdy < -200.0) {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x - width, 2.0) + pow(gl_FragCoord.y - points[i].y + 400.0, 2.0));
+      nd = sqrt(pow(gl_FragCoord.x - points[i].x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - points[i].y + (sdy > 200.0 ? -400.0 : (sdy < -200.0 ? 400.0 : 0.0)), 2.0));
 
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        } else {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x - width, 2.0) + pow(gl_FragCoord.y - points[i].y, 2.0));
-
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        }
-      } else if (sdx < -width / 2.0) {
-        if (sdy > 200.0) {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x + width, 2.0) + pow(gl_FragCoord.y - points[i].y - 400.0, 2.0));
-  
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        } else if (sdy < -200.0) {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x + width, 2.0) + pow(gl_FragCoord.y - points[i].y + 400.0, 2.0));
-
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        } else {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x + width, 2.0) + pow(gl_FragCoord.y - points[i].y, 2.0));
-
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        }
-      } else {
-        if (sdy > 200.0) {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x, 2.0) + pow(gl_FragCoord.y - points[i].y - 400.0, 2.0));
-  
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        } else if (sdy < -200.0) {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x, 2.0) + pow(gl_FragCoord.y - points[i].y + 400.0, 2.0));
-
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        } else {
-          nd = sqrt(pow(gl_FragCoord.x - points[i].x, 2.0) + pow(gl_FragCoord.y - points[i].y, 2.0));
-
-          if (nd < d) {
-            d = nd;
-            shade = shades[i];
-            saturation = saturations[i];
-          }
-        }
+      if (nd < d) {
+        d = nd;
+        shade = shades[i];
+        saturation = saturations[i];
       }
     }
     

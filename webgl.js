@@ -148,6 +148,10 @@ function resize() {
   lid = cid;
 }
 
-window.onresize = resize;
+onresize = resize;
+
+onload = function() {
+  document.body.classList.remove("preload");
+}
 
 resize();

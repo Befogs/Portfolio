@@ -13,6 +13,7 @@
     font-size: 108px;
     top: 100px;
     font-family: "Delicious Handrawn", cursive;
+    white-space: nowrap;
 }
 
 #socials {

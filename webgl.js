@@ -85,15 +85,15 @@ let lid, cid;
 let lastX = 0;
 
 function resize() {
-  if (window.innerWidth - 10 == lastX) {
+  if (window.innerWidth == lastX) {
     return;
   }
 
-  lastX = window.innerWidth - 10;
+  lastX = window.innerWidth;
   
   window.clearInterval(lid);
 
-  canvas.width = window.innerWidth - 10;
+  canvas.width = window.innerWidth;
   gl.viewport(0, 0, canvas.width, 400);
   
   let points = [];
@@ -101,8 +101,8 @@ function resize() {
   let shades = [];
   let saturations = [];
   
-  for (let i = 0; i < window.innerWidth - 10 / (1920 / 32); i++) {
-    points.push(Math.random() * window.innerWidth - 10, Math.random() * 400);
+  for (let i = 0; i < window.innerWidth / (1920 / 32); i++) {
+    points.push(Math.random() * window.innerWidth, Math.random() * 400);
     velocities.push((Math.random() - .5) / 10, (Math.random() - .5) / 10);
     shades.push(Math.random() * .5 + .5);
     saturations.push(Math.random() * .5 + .5);
@@ -118,9 +118,9 @@ function resize() {
       points[i * 2] = points[i * 2] + velocities[i * 2] * deltaTime;
   
       if (points[i * 2] < 0) {
-        points[i * 2] += window.innerWidth - 10;
-      } else if (points[i * 2] > window.innerWidth - 10) {
-        points[i * 2] -= window.innerWidth - 10;
+        points[i * 2] += window.innerWidth;
+      } else if (points[i * 2] > window.innerWidth) {
+        points[i * 2] -= window.innerWidth;
       }
       
       points[i * 2 + 1] = points[i * 2 + 1] + velocities[i * 2 + 1] * deltaTime;
@@ -136,7 +136,7 @@ function resize() {
     gl.uniform2fv(pointsPtr, new Float32Array(points));
     gl.uniform1fv(shadesPtr, new Float32Array(shades));
     gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
-    gl.uniform1f(widthPtr, window.innerWidth - 10);
+    gl.uniform1f(widthPtr, window.innerWidth);
     gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 
     hue = (hue + deltaTime / 100000) % 1;

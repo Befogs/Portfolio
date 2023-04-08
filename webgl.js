@@ -43,7 +43,7 @@ const fs = `
     mediump float sdx = gl_FragCoord.x - cursor.x;
     mediump float sdy = gl_FragCoord.y - cursor.y;
     
-    mediump float cd = sqrt(pow(gl_FragCoord.x - cursor.x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - cursor.y + (sdy < -200.0 ? 400.0 : 0.0), 2.0));
+    mediump float cd = sqrt(pow(gl_FragCoord.x - cursor.x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - cursor.y + (sdy > 200.0 ? -400.0 : (sdy < -200.0 ? 400.0 : 0.0)), 2.0));
 
     if (d < cd) {
       gl_FragColor = vec4(hsv2rgb(vec3(hue, saturation, shade)), 1.0);
@@ -146,7 +146,7 @@ function resize() {
     }
 
     if (window.pageYOffset <= 400) {
-      gl.uniform2fv(cursorPtr, new Float32Array([pageX, 400 - pageY]));
+      gl.uniform2fv(cursorPtr, new Float32Array([pageX, pageY <= 400 ? 400 - pageY : 10000]));
       gl.uniform1f(huePtr, hue);
       gl.uniform2fv(pointsPtr, new Float32Array(points));
       gl.uniform1fv(shadesPtr, new Float32Array(shades));
@@ -170,9 +170,16 @@ onload = function() {
 
 resize();
 
-function mouseCoordinates(event){
-  pageX = event.pageX;
-  pageY = event.pageY;
+function mouseCoordinates(e){
+  if(e.type == 'touchstart' || e.type == 'touchmove' || e.type == 'touchend' || e.type == 'touchcancel'){
+    var evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
+    var touch = evt.touches[0] || evt.changedTouches[0];
+    pageX = touch.pageX;
+    pageY = touch.pageY;
+  } else if (e.type == 'mousedown' || e.type == 'mouseup' || e.type == 'mousemove' || e.type == 'mouseover'|| e.type=='mouseout' || e.type=='mouseenter' || e.type=='mouseleave') {
+    pageX = e.clientX;
+    pageY = e.clientY;
+  }
 }
 
 window.addEventListener('mousemove', mouseCoordinates);

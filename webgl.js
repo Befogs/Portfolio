@@ -22,7 +22,7 @@ const fs = `
   }
   
   void main(void) {
-    mediump float d = 10000.0;
+    mediump float d = 100000.0;
     mediump float shade;
     mediump float saturation;
     mediump float nd;
@@ -146,7 +146,7 @@ function resize() {
     }
 
     if (window.pageYOffset <= 400) {
-      gl.uniform2fv(cursorPtr, new Float32Array([pageX, pageY <= 400 ? 400 - pageY : 10000]));
+      gl.uniform2fv(cursorPtr, new Float32Array([pageX, pageY <= 400 ? 400 - pageY : 100000]));
       gl.uniform1f(huePtr, hue);
       gl.uniform2fv(pointsPtr, new Float32Array(points));
       gl.uniform1fv(shadesPtr, new Float32Array(shades));
@@ -170,16 +170,9 @@ onload = function() {
 
 resize();
 
-function mouseCoordinates(e){
-  if(e.type == 'touchstart' || e.type == 'touchmove' || e.type == 'touchend' || e.type == 'touchcancel'){
-    var evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
-    var touch = evt.touches[0] || evt.changedTouches[0];
-    pageX = touch.pageX;
-    pageY = touch.pageY;
-  } else if (e.type == 'mousedown' || e.type == 'mouseup' || e.type == 'mousemove' || e.type == 'mouseover'|| e.type=='mouseout' || e.type=='mouseenter' || e.type=='mouseleave') {
-    pageX = e.clientX;
-    pageY = e.clientY;
-  }
+function mouseCoordinates(event){
+  pageX = event.pageX;
+  pageY = event.pageY;
 }
 
 window.addEventListener('mousemove', mouseCoordinates);

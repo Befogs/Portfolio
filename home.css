@@ -14,6 +14,10 @@
     top: 100px;
     font-family: "Delicious Handrawn", cursive;
     white-space: nowrap;
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #socials {
@@ -28,6 +32,11 @@
     height: 32px;
     color: rgb(255, 255, 255);
     padding: 10px;
+    transition: all .2s ease-in-out; 
+}
+
+.logo:hover { 
+    transform: scale(1.15); 
 }
 
 a {

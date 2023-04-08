@@ -1,3 +1,8 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 #glbanner {
     position: absolute;
     left: 0;
@@ -39,6 +44,28 @@
     transform: scale(1.15); 
 }
 
-a {
-    color: rgb(0, 0, 0, 0);
+.logoLink {
+    color: rgba(0, 0, 0, 0);
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(241, 241, 241);
+    border: 1px solid;
+    border-style: outset;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(193, 193, 193);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(168, 168, 168);
 }

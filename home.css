@@ -2,4 +2,33 @@
     position: absolute;
     left: 0;
     top: 0;
+    z-index: 0;
+}
+
+#bannerName {
+    position: absolute;
+    left: 50%;
+    color: rgb(255, 255, 255);
+    transform: translate(-50%, -50%);
+    font-size: 108px;
+    top: 100px;
+    font-family: "Delicious Handrawn", cursive;
+}
+
+#socials {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 264px;
+}
+
+.logo {
+    width: 32px;
+    height: 32px;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+}
+
+a {
+    color: rgb(0, 0, 0, 0);
 }

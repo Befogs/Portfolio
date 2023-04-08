@@ -7,11 +7,12 @@ const vs = `
 `;
 
 const fs = `
-  uniform mediump vec2 points[32];
-  uniform mediump float shades[32];
-  uniform mediump float saturations[32];
+  uniform mediump vec2 points[64];
+  uniform mediump float shades[64];
+  uniform mediump float saturations[64];
   uniform mediump float hue;
   uniform mediump float width;
+  uniform mediump vec2 cursor;
   
   mediump vec3 hsv2rgb(mediump vec3 c)
   {
@@ -26,7 +27,7 @@ const fs = `
     mediump float saturation;
     mediump float nd;
     
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 64; i++) {
       mediump float sdx = gl_FragCoord.x - points[i].x;
       mediump float sdy = gl_FragCoord.y - points[i].y;
 
@@ -38,8 +39,17 @@ const fs = `
         saturation = saturations[i];
       }
     }
+
+    mediump float sdx = gl_FragCoord.x - cursor.x;
+    mediump float sdy = gl_FragCoord.y - cursor.y;
     
-    gl_FragColor = vec4(hsv2rgb(vec3(hue, saturation, shade)), 1.0);
+    mediump float cd = sqrt(pow(gl_FragCoord.x - cursor.x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - cursor.y + (sdy < -200.0 ? 400.0 : 0.0), 2.0));
+
+    if (d < cd) {
+      gl_FragColor = vec4(hsv2rgb(vec3(hue, saturation, shade)), 1.0);
+    } else {
+      gl_FragColor = vec4(hsv2rgb(vec3(hue + .5, 1, .85)), 1.0);
+    }
   }
 `;
 
@@ -78,10 +88,13 @@ const pointsPtr = gl.getUniformLocation(prog, "points");
 const shadesPtr = gl.getUniformLocation(prog, "shades");
 const saturationsPtr = gl.getUniformLocation(prog, "saturations");
 const widthPtr = gl.getUniformLocation(prog, "width");
+const cursorPtr = gl.getUniformLocation(prog, "cursor");
 const start = new Date().getTime();
 let hue = Math.random();
 
 let lid, cid;
+let pageX = 0;
+let pageY = 10000;
 let lastX = 0;
 
 function resize() {
@@ -101,7 +114,7 @@ function resize() {
   let shades = [];
   let saturations = [];
   
-  for (let i = 0; i < window.innerWidth / (1920 / 32); i++) {
+  for (let i = 0; i < window.innerWidth / (1920 / 64); i++) {
     points.push(Math.random() * window.innerWidth, Math.random() * 400);
     velocities.push((Math.random() - .5) / 10, (Math.random() - .5) / 10);
     shades.push(Math.random() * .5 + .5);
@@ -114,7 +127,7 @@ function resize() {
     let newTime = new Date().getTime();
     let deltaTime = newTime - lastTime;
     
-    for (let i = 0; i < 32; i++) {
+    for (let i = 0; i < 64; i++) {
       points[i * 2] = points[i * 2] + velocities[i * 2] * deltaTime;
   
       if (points[i * 2] < 0) {
@@ -133,6 +146,7 @@ function resize() {
     }
 
     if (window.pageYOffset <= 400) {
+      gl.uniform2fv(cursorPtr, new Float32Array([pageX, 400 - pageY]));
       gl.uniform1f(huePtr, hue);
       gl.uniform2fv(pointsPtr, new Float32Array(points));
       gl.uniform1fv(shadesPtr, new Float32Array(shades));
@@ -155,3 +169,10 @@ onload = function() {
 }
 
 resize();
+
+function mouseCoordinates(event){
+  pageX = event.pageX;
+  pageY = event.pageY;
+}
+
+window.addEventListener('mousemove', mouseCoordinates);

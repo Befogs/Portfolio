@@ -34,15 +34,20 @@ html, body {
 }
 
 #experience {
+  top: 412px;
+  width: fit-content;
+  position: absolute;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#experience-bg {
   width: 100%;
-  height: fit-content;
-  top: 400px;
+  height: 100px;
   left: 0;
+  top: 400px;
   position: absolute;
   background-color: rgb(255, 255, 255);
-  text-align: center;
-  padding: 12px 0;
-  overflow: visible;
 }
 
 .logo {

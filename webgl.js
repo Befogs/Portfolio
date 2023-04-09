@@ -176,3 +176,7 @@ function mouseCoordinates(event){
 }
 
 window.addEventListener('mousemove', mouseCoordinates);
+
+onscroll = (event) => {
+  canvas.style.left = window.pageXOffset + "px";
+};

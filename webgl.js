@@ -53,6 +53,8 @@ const fs = `
   }
 `;
 
+const experience = document.getElementById("experience");
+const experience2 = experience.cloneNode(true);
 const canvas = document.querySelector("canvas")
 const gl = canvas.getContext("webgl");
 
@@ -122,42 +124,102 @@ function resize() {
   }
   
   let lastTime = new Date().getTime()
-  
-  cid = window.setInterval(function() {
-    let newTime = new Date().getTime();
-    let deltaTime = newTime - lastTime;
+
+  if (lastX < 800) {
+    let lo = 0;
+    experience.style.transform = null;
+    document.body.appendChild(experience2);
     
-    for (let i = 0; i < 64; i++) {
-      points[i * 2] = points[i * 2] + velocities[i * 2] * deltaTime;
-  
-      if (points[i * 2] < 0) {
-        points[i * 2] += window.innerWidth;
-      } else if (points[i * 2] > window.innerWidth) {
-        points[i * 2] -= window.innerWidth;
+    cid = window.setInterval(function() {
+      let newTime = new Date().getTime();
+      let deltaTime = newTime - lastTime;
+
+      if (pageY < 400 || pageY > 500) {
+        lo += deltaTime / 10;
+        
+        if (lo > lastX) {
+          lo = lo % (lastX + parseFloat(window.getComputedStyle(experience).width)) - parseFloat(window.getComputedStyle(experience).width);
+        }
+        
+        experience.style.left = lo + "px";
+        experience2.style.left = lo - parseFloat(window.getComputedStyle(experience).width) + "px";
       }
       
-      points[i * 2 + 1] = points[i * 2 + 1] + velocities[i * 2 + 1] * deltaTime;
-  
-      if (points[i * 2 + 1] < 0) {
-        points[i * 2 + 1] += 400;
-      } else if (points[i * 2 + 1] > 400) {
-        points[i * 2 + 1] -= 400;
+      for (let i = 0; i < 64; i++) {
+        points[i * 2] = points[i * 2] + velocities[i * 2] * deltaTime;
+    
+        if (points[i * 2] < 0) {
+          points[i * 2] += lastX;
+        } else if (points[i * 2] > lastX) {
+          points[i * 2] -= lastX;
+        }
+        
+        points[i * 2 + 1] = points[i * 2 + 1] + velocities[i * 2 + 1] * deltaTime;
+    
+        if (points[i * 2 + 1] < 0) {
+          points[i * 2 + 1] += 400;
+        } else if (points[i * 2 + 1] > 400) {
+          points[i * 2 + 1] -= 400;
+        }
       }
+  
+      if (window.pageYOffset <= 400) {
+        gl.uniform2fv(cursorPtr, new Float32Array([pageX, pageY <= 400 ? 400 - pageY : 100000]));
+        gl.uniform1f(huePtr, hue);
+        gl.uniform2fv(pointsPtr, new Float32Array(points));
+        gl.uniform1fv(shadesPtr, new Float32Array(shades));
+        gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
+        gl.uniform1f(widthPtr, lastX);
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+      }
+  
+      hue = (hue + deltaTime / 100000) % 1;
+      lastTime = newTime;
+    }, 1000 / 60);
+  } else {
+    experience.style.left = lastX / 2 + "px";
+    experience.style.transform = "translate(-50%, 0)";
+    
+    if (experience2.parentElement != null) {
+      document.body.removeChild(experience2);
     }
-
-    if (window.pageYOffset <= 400) {
-      gl.uniform2fv(cursorPtr, new Float32Array([pageX, pageY <= 400 ? 400 - pageY : 100000]));
-      gl.uniform1f(huePtr, hue);
-      gl.uniform2fv(pointsPtr, new Float32Array(points));
-      gl.uniform1fv(shadesPtr, new Float32Array(shades));
-      gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
-      gl.uniform1f(widthPtr, window.innerWidth);
-      gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-    }
-
-    hue = (hue + deltaTime / 100000) % 1;
-    lastTime = newTime;
-  }, 1000 / 60);
+    
+    cid = window.setInterval(function() {
+      let newTime = new Date().getTime();
+      let deltaTime = newTime - lastTime;
+      
+      for (let i = 0; i < 64; i++) {
+        points[i * 2] = points[i * 2] + velocities[i * 2] * deltaTime;
+    
+        if (points[i * 2] < 0) {
+          points[i * 2] += lastX;
+        } else if (points[i * 2] > lastX) {
+          points[i * 2] -= lastX;
+        }
+        
+        points[i * 2 + 1] = points[i * 2 + 1] + velocities[i * 2 + 1] * deltaTime;
+    
+        if (points[i * 2 + 1] < 0) {
+          points[i * 2 + 1] += 400;
+        } else if (points[i * 2 + 1] > 400) {
+          points[i * 2 + 1] -= 400;
+        }
+      }
+  
+      if (window.pageYOffset <= 400) {
+        gl.uniform2fv(cursorPtr, new Float32Array([pageX, pageY <= 400 ? 400 - pageY : 100000]));
+        gl.uniform1f(huePtr, hue);
+        gl.uniform2fv(pointsPtr, new Float32Array(points));
+        gl.uniform1fv(shadesPtr, new Float32Array(shades));
+        gl.uniform1fv(saturationsPtr, new Float32Array(saturations));
+        gl.uniform1f(widthPtr, lastX);
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+      }
+  
+      hue = (hue + deltaTime / 100000) % 1;
+      lastTime = newTime;
+    }, 1000 / 60);
+  }
 
   lid = cid;
 }

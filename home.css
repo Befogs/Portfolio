@@ -26,6 +26,24 @@ html, body {
   user-select: none;
 }
 
+#introTitle {
+  position: absolute;
+  left: 5%;
+  font-size: 72px;
+  top: 500px;
+  font-family: "Roboto", sans-serif;
+  white-space: nowrap;
+}
+
+#introDesc {
+  position: absolute;
+  left: 5%;
+  font-size: 32px;
+  top: 630px;
+  font-family: "Roboto", sans-serif;
+  white-space: nowrap;
+}
+
 #socials {
   position: absolute;
   left: 50%;
@@ -101,4 +119,11 @@ html, body {
   -moz-transition: none !important;
   -ms-transition: none !important;
   -o-transition: none !important;
+}
+
+::selection {
+  background: rgb(255, 200, 0);
+}
+::-moz-selection {
+  background: rgb(255, 200, 0);
 }

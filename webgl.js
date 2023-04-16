@@ -31,7 +31,7 @@ const fs = `
       mediump float sdx = gl_FragCoord.x - points[i].x;
       mediump float sdy = gl_FragCoord.y - points[i].y;
 
-      nd = sqrt(pow(gl_FragCoord.x - points[i].x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - points[i].y + (sdy > 200.0 ? -400.0 : (sdy < -200.0 ? 400.0 : 0.0)), 2.0));
+      nd = pow(gl_FragCoord.x - points[i].x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - points[i].y + (sdy > 200.0 ? -400.0 : (sdy < -200.0 ? 400.0 : 0.0)), 2.0);
 
       if (nd < d) {
         d = nd;
@@ -43,7 +43,7 @@ const fs = `
     mediump float sdx = gl_FragCoord.x - cursor.x;
     mediump float sdy = gl_FragCoord.y - cursor.y;
     
-    mediump float cd = sqrt(pow(gl_FragCoord.x - cursor.x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - cursor.y + (sdy > 200.0 ? -400.0 : (sdy < -200.0 ? 400.0 : 0.0)), 2.0));
+    mediump float cd = pow(gl_FragCoord.x - cursor.x + (sdx > width / 2.0 ? -width : (sdx < -width / 2.0 ? width : 0.0)), 2.0) + pow(gl_FragCoord.y - cursor.y + (sdy > 200.0 ? -400.0 : (sdy < -200.0 ? 400.0 : 0.0)), 2.0);
 
     if (d < cd) {
       gl_FragColor = vec4(hsv2rgb(vec3(hue, saturation, shade)), 1.0);

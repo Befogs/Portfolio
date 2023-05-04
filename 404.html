@@ -1,1 +1,88 @@
-Page not found or no longer exists
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Luca Rose - Page Not Found</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png?"/>
+    <meta name="description" content="The portfolio website of Luca Rose.">
+    <meta content="Luca Rose - Page Not Found" property="og:title">
+    <meta content="The portfolio website of Luca Rose." property="og:description">
+
+    <style>
+      body {
+          background-color: rgb(240, 240, 242)
+      }
+      
+      #content {
+          width: 700px;
+          height: 250px;
+          position: absolute;
+          left: 50%;
+          top: 40%;
+          transform: translate(-50%, -50%);
+          background-color: rgb(253, 253, 255);
+          border-radius: 20px;
+          box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, .02);
+      }
+      
+      #title {
+          position: absolute;
+          top: 48px;
+          left: 32px;
+          font-family: 'Roboto', sans-serif;
+          font-size: 40px;
+          font-weight: 500;
+          margin: 0;
+      }
+      
+      #desc {
+          position: absolute;
+          top: 96px;
+          left: 32px;
+          width: 90%;
+          font-family: 'Roboto', sans-serif;
+          font-size: 22px;
+          font-weight: 300;
+      }
+      
+      #bottom {
+          position: absolute;
+          left: 50%;
+          top: 190px;
+          transform: translate(-50%);
+          font-family: 'Roboto', sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          white-space: nowrap;
+      }
+      
+      a {
+          font-weight: 700;
+      }
+      
+      a:link { text-decoration: none; }
+      a:visited { text-decoration: none; }
+      a:hover { text-decoration: none; }
+      a:active { text-decoration: none; }
+    </style>
+  </head>
+
+  <body>
+      <div id="content">
+          <h1 id="title">404 Not Found</h1>
+          <h2 id="desc">The requested page could not be found because it does not exist or has since been removed.</h2>
+          <h3 id="bottom">If you believe this is an error please <a href="mailto:bug@lucaro.se?subject=" target="_blank" id="email">report a missing page</a> or <a href="https://lucaro.se">return home</a></h3>
+      </div>
+
+     <script>
+       const link = document.getElementById("email");
+       const path = window.location.pathname;
+       
+       link.href += "Missing Portfolio Website Page&body=The path \"" + path + "\" cannot be found and I believe that this is an error. I'd appreciate it if you could fix this!"
+     </script>
+  </body>
+</html>

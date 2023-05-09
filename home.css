@@ -26,29 +26,19 @@ html, body {
   user-select: none;
 }
 
-#introTitle {
-  position: absolute;
-  left: 5%;
-  font-size: 72px;
-  top: 500px;
-  font-family: "Roboto", sans-serif;
-  white-space: nowrap;
-}
-
-#introDesc {
-  position: absolute;
-  left: 5%;
-  font-size: 32px;
-  top: 630px;
-  font-family: "Roboto", sans-serif;
-  white-space: nowrap;
-}
-
 #socials {
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
   top: 264px;
+}
+
+#footer {
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  margin: 8px;
+  font-weight: 300;
+  font-size: 12px;
 }
 
 #experience {
@@ -84,11 +74,53 @@ html, body {
   padding: 0 16px;
 }
 
+#headshot {
+  border-radius: 50%;
+  width: 350px;
+  border: solid 4px rgb(255, 255, 255);
+  margin: 0 auto;
+}
+
+#about {
+  margin-left: 50px;
+}
+
+#introTitle {
+  margin: 20px 0 0 0;
+  font-size: 36px;
+  top: 500px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+}
+
+#introDesc {
+  margin-top: 30px;
+  font-size: 20px;
+  top: 630px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+}
+
+.flex {
+  position: absolute;
+  width: 60%;
+  top: 557px;
+  left: 50%;
+  display: flex;
+  flex-direction: row;
+  font-size: 30px;
+  transform: translate(-50%, 0%);
+}
+
+.flex-element {
+  padding: 10px;
+}
+
 .logo:hover { 
   transform: scale(1.15); 
 }
 
-.logoLink {
+.url {
   color: rgba(0, 0, 0, 0);
 
   -webkit-user-select: none;
@@ -121,9 +153,8 @@ html, body {
   -o-transition: none !important;
 }
 
-::selection {
-  background: rgb(255, 200, 0);
-}
-::-moz-selection {
-  background: rgb(255, 200, 0);
+@media (max-width: 1400px) {
+  .flex {
+    flex-direction: column;
+  }
 }

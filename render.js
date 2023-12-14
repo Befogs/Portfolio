@@ -184,7 +184,7 @@ function init() {
 
         frames++;
 
-        if (frames == 15000) {
+        if (frames == 8196) {
             init();
         }
     }, 1000 / 60);

@@ -30,14 +30,10 @@ function init() {
     let maskY = Math.round(maskX / 1756 * 277)
     maskX = Math.round(maskX);
 
-    console.log(maskX, maskY);
-
     let maskLB = resX / 2 - maskX / 2;
     let maskRB = resX / 2 + maskX / 2;
     let maskTB = resY / 2 + maskY / 2;
     let maskBB = resY / 2 - maskY / 2;
-
-    console.log(maskLB, maskRB);
 
     let particleCount = Math.round(resX * resY / 500)
 
@@ -122,8 +118,6 @@ function init() {
         }
 
         frames++;
-
-        console.log(frames);
 
         if (frames == 15000) {
             init();

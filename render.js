@@ -35,7 +35,7 @@ function init() {
     let maskTB = resY / 2 + maskY / 2;
     let maskBB = resY / 2 - maskY / 2;
 
-    let particleCount = Math.round(resX * resY / 500)
+    let particleCount = Math.max(Math.round(resX * resY / 500), 1);
 
     noise.seed(Math.random());
 
@@ -71,12 +71,17 @@ function init() {
     }
     
     let particles = [];
+    let particles2 = [];
     
     for (let i = 0; i < particleCount; i++) {
         particles.push([Math.random() * resX, Math.random() * resY, 0, 0]);
     }
+
+    for (let i = 0; i < particleCount; i++) {
+        particles2.push([Math.random() * resX, Math.random() * resY, 0, 0]);
+    }
     
-    updateInterval = window.setInterval(function() {
+    updateInterval = window.setInterval(function() { 
         for (let i = 0; i < particleCount; i++) {
             let particle = particles[i];
             let nx = Math.round(particle[0]);
@@ -125,6 +130,56 @@ function init() {
             ctx.stroke();
     
             particles[i] = newPos;
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            let particle = particles2[i];
+            let nx = Math.round(particle[0]);
+            let ny = Math.round(particle[1]);
+    
+            if (nx < 0 || nx >= resX || ny < 0 || ny >= resY) {
+                particles2[i] = [Math.random() * resX, Math.random() * resY, 0, 0];
+                continue;
+            }
+            
+            let flow = flowfield[nx * resY + ny];
+            let nvx = particle[2] - flow[0];
+            let nvy = particle[3] - flow[1];
+            let magnitude = Math.sqrt(nvx * nvx + nvy * nvy);
+            nvx /= magnitude;
+            nvy /= magnitude;
+            
+            let newPos = [particle[0] + nvx, particle[1] + nvy, nvx, nvy, particle[4]];
+    
+            ctx.beginPath();
+            ctx.moveTo(particle[0], particle[1]);
+            ctx.lineTo(newPos[0], newPos[1]);
+
+            let mpx = newPos[0] + maskOffset[nx * resY + ny][0];
+            let mpy = newPos[1] + maskOffset[nx * resY + ny][1];
+
+            if (mpx < maskLB || mpx > maskRB || mpy < maskBB || mpy > maskTB) {
+                if (newPos[4] == true && Math.random() < .2) {
+                    newPos[4] = false;
+                }
+            } else {
+                let ix = Math.round((mpx - maskLB) / maskX * 1756);
+                let iy = Math.round((mpy - maskBB) / maskY * 277);
+                let masked = mask[ix * 277 + iy];
+
+                if (masked == true) {
+                    newPos[4] = true;
+                } else {
+                    if (Math.random() < .2) {
+                        newPos[4] = false;
+                    }
+                }
+            }
+            ctx.strokeStyle = newPos[4] == true ? "#BBBBBB" : "#FFFFFF";
+            ctx.globalAlpha = newPos[4] == true ? .5 : .05;
+            ctx.stroke();
+    
+            particles2[i] = newPos;
         }
 
         frames++;

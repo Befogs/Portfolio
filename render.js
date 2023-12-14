@@ -43,16 +43,20 @@ function init() {
     
     for (let x = 0; x < resX; x++) {
         for (let y = 0; y < resY; y++) {
-            let rad = noise.perlin2(x / 128, y / 128) * Math.PI;
+            let rad = noise.perlin2(x / 384, y / 384) * 2;
+            flowfield.push(rad)
+        }
+    }
+
+    noise.seed(Math.random());
+
+    for (let x = 0; x < resX; x++) {
+        for (let y = 0; y < resY; y++) {
+            let i = x * resY + y;
+            let rad = Math.PI * (noise.perlin2(x / 192, y / 192) + flowfield[i]);
             let vx = Math.cos(rad);
             let vy = Math.sin(rad);
-            flowfield.push([vx, vy]);
-            /*ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + vx * 10, y + vy * 10);
-            ctx.strokeStyle = "#ffffff";
-            ctx.globalAlpha = 0;
-            ctx.stroke();*/
+            flowfield[i] = [vx, vy];
         }
     }
 
@@ -69,7 +73,7 @@ function init() {
     let particles = [];
     
     for (let i = 0; i < particleCount; i++) {
-        particles.push([Math.random() * resX, Math.random() * resY]);
+        particles.push([Math.random() * resX, Math.random() * resY, 0, 0]);
     }
     
     updateInterval = window.setInterval(function() {
@@ -79,12 +83,18 @@ function init() {
             let ny = Math.round(particle[1]);
     
             if (nx < 0 || nx >= resX || ny < 0 || ny >= resY) {
-                particles[i] = [Math.random() * resX, Math.random() * resY];
+                particles[i] = [Math.random() * resX, Math.random() * resY, 0, 0];
                 continue;
             }
             
             let flow = flowfield[nx * resY + ny];
-            let newPos = [particle[0] + flow[0] * 2, particle[1] + flow[1] * 2, particle[2]];
+            let nvx = particle[2] + flow[0];
+            let nvy = particle[3] + flow[1];
+            let magnitude = Math.sqrt(nvx * nvx + nvy * nvy);
+            nvx /= magnitude;
+            nvy /= magnitude;
+            
+            let newPos = [particle[0] + nvx, particle[1] + nvy, nvx, nvy, particle[4]];
     
             ctx.beginPath();
             ctx.moveTo(particle[0], particle[1]);
@@ -94,8 +104,8 @@ function init() {
             let mpy = newPos[1] + maskOffset[nx * resY + ny][1];
 
             if (mpx < maskLB || mpx > maskRB || mpy < maskBB || mpy > maskTB) {
-                if (newPos[2] == true && Math.random() < .2) {
-                    newPos[2] = false;
+                if (newPos[4] == true && Math.random() < .2) {
+                    newPos[4] = false;
                 }
             } else {
                 let ix = Math.round((mpx - maskLB) / maskX * 1756);
@@ -103,15 +113,15 @@ function init() {
                 let masked = mask[ix * 277 + iy];
 
                 if (masked == true) {
-                    newPos[2] = true;
+                    newPos[4] = true;
                 } else {
                     if (Math.random() < .2) {
-                        newPos[2] = false;
+                        newPos[4] = false;
                     }
                 }
             }
-            ctx.strokeStyle = newPos[2] == true ? "#7F00FF" : "#3F00FF";
-            ctx.globalAlpha = newPos[2] == true ? .5 : .05;
+            ctx.strokeStyle = newPos[4] == true ? "#7F00FF" : "#3F00FF";
+            ctx.globalAlpha = newPos[4] == true ? .5 : .05;
             ctx.stroke();
     
             particles[i] = newPos;
